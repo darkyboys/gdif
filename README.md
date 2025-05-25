@@ -1,5 +1,5 @@
 # GDIF - Goblin's Demonic Image Flasher 🧛‍♂️🔥
-
+<img src="img/screenshot.png">
 **GDIF** is a modern, curses-free ISO image flasher built using C++ and a custom HTML GUI. It allows users to flash Linux and Windows ISOs onto USB drives with style and ease — no terminal madness unless something truly goes wrong.
 
 ## 🚀 Features
