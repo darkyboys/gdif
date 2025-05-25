@@ -9,7 +9,7 @@ compare [
 	`src/ui/ui.hh`
 ];
 
-compile_arguments (`-Wmultichar`);
+compile_arguments (`-w`);
 
 main (`src/main.cc`);
 out  (`gdif`);
