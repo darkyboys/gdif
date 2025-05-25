@@ -27,7 +27,7 @@
 - `webkit2gtk` (Required for htmlui)
 - [Magma](https://github.com/darkyboys/magma) (The Build System To Make The Project)
 - [MkLib](https://github.com/darkyboys/mklib) (The Build System To Make The UI)
-- [GWoeUSB](https://github.com/darkyboys/gdif/woeusb) (automatically installed if missing)
+- [GWoeUSB](https://github.com/darkyboys/gdif/tree/main/woeusb) (automatically installed if missing)
 
 ---
 
@@ -101,7 +101,7 @@ Written by `ghgltggamer`
 
 ## 🙏 Acknowledgements
 
-* [GWoeUSB](https://github.com/darkyboys/gdif/woeusb) for Windows image flashing support
+* [GWoeUSB](https://github.com/darkyboys/gdif/tree/main/woeusb) for Windows image flashing support
 * The Linux community for keeping tools like `dd`, `lsblk`, and `bash` awesome
 * You, for using GDIF!
 
