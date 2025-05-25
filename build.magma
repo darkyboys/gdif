@@ -9,6 +9,8 @@ compare [
 	`src/ui/ui.hh`
 ];
 
+compile_arguments (`-Wmultichar`);
+
 main (`src/main.cc`);
 out  (`gdif`);
 bin  (`bin`);
