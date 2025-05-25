@@ -1,0 +1,30 @@
+# This file must be only compiled with the magma build system;
+
+run       (`mklib`);
+increment (`true`);
+
+compare [
+	`include/htmlui/htmlui.hh`,
+	`src/main.cc`,
+	`src/ui/ui.hh`
+];
+
+main (`src/main.cc`);
+out  (`gdif`);
+bin  (`bin`);
+
+pkg_in [
+	`gtk+-3.0`,
+	`webkit2gtk-4.0`
+];
+
+include [
+	`include`,
+	`src`
+];
+
+# system (`clear`);
+
+exec ();
+
+make ();

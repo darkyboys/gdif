@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Glassmorphic ISO Flasher</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #140421, #1e0635);
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #fff;
+    }
+
+    .glass-container {
+      display: flex;
+      justify-content: space-between;
+      gap: 2rem;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 20px;
+      box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      padding: 2rem;
+      width: 90%;
+      max-width: 700px;
+    }
+
+    .left, .right {
+      flex: 1;
+    }
+
+    h2 {
+      margin-bottom: 1rem;
+      font-size: 1.5rem;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 0.8rem;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 10px;
+      color: #eee;
+      margin-bottom: 1rem;
+      transition: border 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    input[type="text"]::placeholder {
+      color: #bbb;
+    }
+
+    input[type="text"]:focus {
+      outline: none;
+      border: 1px solid #c77dff;
+      box-shadow: 0 0 10px rgba(199, 125, 255, 0.5);
+    }
+
+    button {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(6px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 0.6rem 1.2rem;
+      border-radius: 12px;
+      color: white;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background 0.3s ease, transform 0.2s;
+      margin-bottom: 0.5rem;
+      width: 100%;
+      text-align: center;
+    }
+
+    button:hover {
+      background: rgba(255, 255, 255, 0.25);
+      transform: scale(1.02);
+    }
+
+    .progress-bar {
+      margin-top: 1rem;
+      height: 8px;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .progress-bar-inner {
+      height: 100%;
+      width: 0;
+      background: linear-gradient(135deg, #7b2cbf, #c77dff);
+      transition: width 0.4s ease;
+    }
+
+    details {
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      padding: 0.5rem;
+      margin-bottom: 1rem;
+      backdrop-filter: blur(6px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    summary {
+      display: block;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 0.6rem 1.2rem;
+      border-radius: 12px;
+      cursor: pointer;
+      color: white;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      list-style: none;
+      backdrop-filter: blur(6px);
+      user-select: none;
+    }
+
+    summary:hover {
+      background: rgba(255, 255, 255, 0.25);
+    }
+
+    summary::marker {
+      display: none;
+    }
+
+    .drive-buttons {
+      margin-top: 0.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    /* Selected button style for drives and OS */
+    .drive-buttons button.selected {
+      border: 2px solid #c77dff;
+      background: rgba(200, 120, 255, 0.2);
+    }
+  </style>
+</head>
+<body>
+  <div class="glass-container">
+    <div class="left">
+      <h2>Flash ISO</h2>
+      <button onclick="startFlash() ">Start Flash</button>
+      <div class="progress-bar">
+        <div class="progress-bar-inner" id="progressInner"></div>
+      </div>
+    </div>
+
+    <div class="right">
+      <input type="text" id="isoPath" placeholder="Enter ISO path here" />
+
+      <details>
+        <summary>Select Drive</summary>
+        <div class="drive-buttons" id="driveList"></div>
+      </details>
+
+      <details id="osDetails">
+        <summary id="osSummary">Select OS Type</summary>
+        <div class="drive-buttons" id="osList">
+          <button onclick="selectOS('linux') ">Flash for Linux</button>
+          <button onclick="selectOS('windows') ">Flash for Windows</button>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <script>
+    const driveList = document.getElementById('driveList');
+    const osSummary = document.getElementById('osSummary');
+    const osDetails = document.getElementById('osDetails');
+    let selectedDrive = null;
+    let selectedOS = null;
+
+    let is_making = false;
+
+    document.getElementById('isoPath').addEventListener('input', () => {
+      const value = document.getElementById('isoPath').value;
+      if (window.nativeBridge && typeof window.nativeBridge.invoke === 'function') {
+        window.nativeBridge.invoke('gdif_cc_set_iso_path', value);
+      }
+    });
+
+
+    let driveCounter = 1;
+
+    function addDrive(devicePath, driveSize) {
+      const driveName = `Drive ${driveCounter} - ${devicePath}`;
+      driveCounter++;
+
+      const button = document.createElement('button');
+      button.className = 'drive-button';
+      button.textContent = `${driveName} (${driveSize})`;
+
+      button.onclick = () => {
+        const allButtons = document.querySelectorAll('.drive-button');
+        allButtons.forEach(btn => btn.classList.remove('selected'));
+        button.classList.add('selected');
+        selectedDrive = devicePath;
+
+        if (typeof window.gdif_cc_set_drive_path === 'function') {
+          gdif_cc_set_drive_path(devicePath);
+        }
+      };
+
+      driveList.appendChild(button);
+    }
+
+    function selectOS(os) {
+      const allButtons = document.querySelectorAll('#osList button');
+      allButtons.forEach(btn => btn.classList.remove('selected'));
+
+      const button = Array.from(allButtons).find(b => b.textContent.toLowerCase().includes(os));
+      if (button) {
+        button.classList.add('selected');
+        selectedOS = os;
+
+        if (window.nativeBridge && typeof window.nativeBridge.invoke === 'function') {
+            window.nativeBridge.invoke('gdif_cc_set_usb_type', os);
+        }
+
+        const displayOS = os.charAt(0).toUpperCase() + os.slice(1);
+        osSummary.textContent = `Select OS Type: ${displayOS}`;
+        osDetails.open = false;
+      }
+    }
+
+    function getSelectedDrive() {
+      return selectedDrive;
+    }
+
+    function getSelectedOS() {
+      return selectedOS;
+    }
+
+    function setProgress(percent) {
+      const progress = document.getElementById('progressInner');
+      progress.style.width = Math.max(0, Math.min(percent, 100)) + '%';
+    }
+
+    function startFlash() {
+      const isoPath = document.getElementById('isoPath').value.trim();
+      if (!isoPath) {
+        alert('Please enter an ISO path.');
+        return;
+      }
+      if (!selectedDrive) {
+        alert('Please select a drive.');
+        return;
+      }
+      if (!selectedOS) {
+        alert('Please select target OS.');
+        return;
+      }
+
+        if (is_making){
+            alert ('An Iso for ' + getSelectedOS() + ' is already flashing at /dev/' + getSelectedDrive() + ', You can only continue when the task is finished.')
+        }
+        else {
+            let cp1 = confirm("Are you sure that the drive you selected /dev/" + getSelectedDrive() + " is the correct drive ? Because performing this action will erase everything on /dev/" + getSelectedDrive() + ', So are you sure ? Press ok if you are othervise cancle');
+            if (cp1){
+                let cp2 = confirm("Reconfirm: Are you sure that the drive you selected /dev/" + getSelectedDrive() + " is the correct drive ? Because performing this action will erase everything on /dev/" + getSelectedDrive() + ', So are you sure ? Press ok if you are othervise cancle');
+                if (cp2){
+                    if (window.nativeBridge && typeof window.nativeBridge.invoke === 'function') {
+                        // window.nativeBridge.invoke('gdif_cc_set_iso_path', document.getElementById('isoPath').value)
+                        window.nativeBridge.invoke('gdif_cc_flash_drive', '');
+                    }
+                }
+            }
+        }
+    }
+
+
+
+    function install_GWoeUSB(){
+        if (confirm("Do You want me to install WoeUSB for you ?")){
+            alert ("I Am installing WoeUSB for you");
+            if (window.nativeBridge && typeof window.nativeBridge.invoke === 'function') {
+                // window.nativeBridge.invoke('gdif_cc_set_iso_path', document.getElementById('isoPath').value)
+                window.nativeBridge.invoke('gdif_cc_install_gwoeusb', '');
+            }
+        }
+        else {
+            alert ("I Couldn't find a required WoeUSB Installation, Please install it othervise you won't be able to make bootable Windows USB Flash Drives.");
+        }
+    }
+
+    // Example for testing:
+    // addDrive("nvme0n1", "931.5G");
+    // addDrive("sda", "64G");
+  </script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+# This file must be ran with mklib only by darkyboys at github
+
+extension (temp);
+src       (src/ui/template);
+include   (start);
+import    (src/ui/html/index.html);
+include   (end);
+
+extension (hh);
+output_directory (src/ui);
+output    (ui);
+make      ();

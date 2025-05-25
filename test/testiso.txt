@@ -1,0 +1,2 @@
+/home/gtg/Documents/iso/archlinux-2025.05.01-x86_64.iso
+/home/gtg/Documents/iso/Win11_24H2_EnglishInternational_x64.iso
