@@ -109,7 +109,7 @@ Written by `ghgltggamer`
 
 ## 💬 Feedback
 
-Open an [issue](https://github.com/darkyboys/gdif/issues) or start a [discussion](https://github.com/darkyboys/gdif/discussions) if you run into bugs or have feature ideas!
+Open an [issue](https://github.com/darkyboys/gdif/issues) if you run into bugs or have feature ideas!
 
 ---
 
