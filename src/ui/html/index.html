@@ -284,15 +284,15 @@
 
 
     function install_GWoeUSB(){
-        if (confirm("Do You want me to install WoeUSB for you ?")){
-            alert ("I Am installing WoeUSB for you");
+        if (confirm("Do You want me to install GWoeUSB for you ?")){
+            alert ("I Am installing GWoeUSB for you");
             if (window.nativeBridge && typeof window.nativeBridge.invoke === 'function') {
                 // window.nativeBridge.invoke('gdif_cc_set_iso_path', document.getElementById('isoPath').value)
                 window.nativeBridge.invoke('gdif_cc_install_gwoeusb', '');
             }
         }
         else {
-            alert ("I Couldn't find a required WoeUSB Installation, Please install it othervise you won't be able to make bootable Windows USB Flash Drives.");
+            alert ("I Couldn't find a required GWoeUSB Installation, Please install it othervise you won't be able to make bootable Windows USB Flash Drives.");
         }
     }
 
