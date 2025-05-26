@@ -116,7 +116,7 @@ int main(){
 	});
 
 	Window.registerFunction ("gdif_cc_install_gwoeusb", [&](std::string arg){
-		std::system ("mkdir -p ~/.config/gdif");
+		std::system ("mkdir -p " + getRealUserHome() + "/.config/gdif");
 		std::system (std::string("wget https://raw.githubusercontent.com/darkyboys/gdif/refs/heads/main/woeusb/gwoeusb.bash -O " + getRealUserHome() + "/.config/gdif/gwoeusb.bash").c_str());
 		std::system (std::string("chmod +x " + getRealUserHome() + "/.config/gdif/gwoeusb.bash").c_str());
 		std::system ("echo 0 > progress.txt");
